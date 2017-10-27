@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/jlc.iml" filepath="$PROJECT_DIR$/jlc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc_main.iml" group="jlc" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc_test.iml" group="jlc" />
+    </modules>
+  </component>
+</project>
