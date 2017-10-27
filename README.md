@@ -7,5 +7,7 @@ Locking is essential to avoid multiple concurrent updates to overwrite data from
 
 It becomes application's responsibility to handle such conditions and retry the update.
 
+While the Pessimistic Locking could solves the problem, it could create a lock contention in highly concurrent applications.
+
 Java Lock Corodinator illustrates a method where you can queue the database updates and execute them atomically.
 
