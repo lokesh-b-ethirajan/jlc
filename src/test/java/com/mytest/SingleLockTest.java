@@ -18,9 +18,9 @@ import java.util.UUID;
  * @author lokesh
  */
 
-public class MyWorkingTest {
+public class SingleLockTest {
 
-    private static final Logger logger = LogManager.getLogger(MyWorkingTest.class);
+    private static final Logger logger = LogManager.getLogger(SingleLockTest.class);
 
     private AnnotationConfigApplicationContext context = null;
     private DeviceStateService deviceStateService = null;
