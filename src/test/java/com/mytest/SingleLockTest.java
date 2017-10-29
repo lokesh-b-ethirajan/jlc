@@ -66,8 +66,6 @@ public class SingleLockTest {
     @BeforeClass
     public void beforeClass() {
 
-        //new Thread(lockManager).start();
-
         context = new AnnotationConfigApplicationContext(AppConfig.class);
         deviceStateService = context.getBean(DeviceStateService.class);
 
