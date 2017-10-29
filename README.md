@@ -11,3 +11,5 @@ While the Pessimistic Locking could solve the problem, it could also create a lo
 
 Java Lock Corodinator illustrates a method where you can queue the database updates and execute them atomically.
 
+SimpleLockManager will allow to lock resources and update them atomically and sequentially. A LockPartitioner can be used to run multiple lock managers in parallel.
+
