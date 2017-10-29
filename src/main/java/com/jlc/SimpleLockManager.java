@@ -14,13 +14,20 @@ public class SimpleLockManager implements LockManager {
 
     private static final Logger logger = LogManager.getLogger(SimpleLockManager.class);
 
-    private boolean shutdown = false;
-    private boolean shutdownComplete = false;
+    private volatile boolean shutdown = false;
+    private volatile boolean shutdownComplete = false;
 
     private Queue<LockEvent> queue = new ConcurrentLinkedQueue<>();
 
+    public SimpleLockManager() {
+        new Thread(this).start();
+    }
+
     @Override
     public void run() {
+
+        logger.info("Running simple lock manager..");
+
         while (!shutdown || !queue.isEmpty()) {
 
             LockEvent lockEvent = queue.peek();
@@ -59,6 +66,10 @@ public class SimpleLockManager implements LockManager {
     public void lock(LockEvent lockEvent) {
         queue.add(lockEvent);
         logger.info("added lock event to queue");
+    }
+
+    public boolean isEmpty() {
+        return queue.isEmpty();
     }
 
     private void release(LockEvent lockEvent) {

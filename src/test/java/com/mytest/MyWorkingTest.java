@@ -37,6 +37,16 @@ public class MyWorkingTest {
         }
 
         @Override
+        public void setId() {
+
+        }
+
+        @Override
+        public Object getId() {
+            return device;
+        }
+
+        @Override
         public void acquired() {
 
             try {
@@ -56,7 +66,7 @@ public class MyWorkingTest {
     @BeforeClass
     public void beforeClass() {
 
-        new Thread(lockManager).start();
+        //new Thread(lockManager).start();
 
         context = new AnnotationConfigApplicationContext(AppConfig.class);
         deviceStateService = context.getBean(DeviceStateService.class);
