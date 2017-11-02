@@ -44,7 +44,7 @@ public class MyFailingTest {
     this test will throw several optimistic lock exceptions
     javax.persistence.OptimisticLockException
      */
-    @Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
+    //@Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
     public void theTest() {
 
         try {

@@ -24,6 +24,7 @@ public class ProxyLockServer implements Runnable {
     public ProxyLockServer(ProxyServerHandler proxyServerHandler, int port) {
         this.proxyServerHandler = proxyServerHandler;
         this.port = 8040;
+        new Thread(this).start();
     }
 
     public boolean isReady() {

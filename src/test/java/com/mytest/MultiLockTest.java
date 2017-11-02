@@ -90,7 +90,7 @@ public class MultiLockTest {
     this test will NOT throw optimistic lock exceptions
     the db updates are staged in a lock-free queue and dispatched to db in the background
      */
-    @Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
+    //@Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
     public void theTest() {
 
         updateDevice(device);
