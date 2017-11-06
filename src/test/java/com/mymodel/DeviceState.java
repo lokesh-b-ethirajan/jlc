@@ -1,6 +1,7 @@
 package com.mymodel;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author lokesh
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "devicestate")
-public class DeviceState {
+public class DeviceState implements Serializable {
 
     @Version
     private int version;

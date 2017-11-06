@@ -30,7 +30,7 @@ public class DefaultLockPartitioner implements LockPartitioner {
     }
 
     @Override
-    public SimpleLockManager getPartition(LockEvent lockEvent) {
+    public LockManager getPartition(LockEvent lockEvent) {
         int partitionNumber = lockEvent.getId().hashCode() % getPartition();
         if(logger.isDebugEnabled())
             logger.debug("Returning partition for " + lockEvent.getId() + " -> " + partitionNumber);
@@ -38,8 +38,14 @@ public class DefaultLockPartitioner implements LockPartitioner {
     }
 
     @Override
-    public SimpleLockManager[] getAllPartitions() {
+    public LockManager[] getAllPartitions() {
         return simpleLockManagers;
+    }
+
+    @Override
+    public void shutdown() {
+        for(LockManager lockManager : getAllPartitions())
+            lockManager.shutdown();
     }
 
 }

@@ -6,7 +6,8 @@ package com.jlc;
 
 public interface LockPartitioner {
 
-    SimpleLockManager getPartition(LockEvent lockEvent);
-    SimpleLockManager[] getAllPartitions();
+    LockManager getPartition(LockEvent lockEvent);
+    LockManager[] getAllPartitions();
+    void shutdown();
 
 }

@@ -1,6 +1,7 @@
 package com.mytest;
 
 import com.jlc.*;
+import com.myevent.DeviceStateEvent;
 import com.mymodel.DeviceState;
 import com.myservice.DeviceStateService;
 import org.apache.logging.log4j.LogManager;
@@ -11,58 +12,22 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
  */
 
-public class MultiLockTest {
+public class DistributedLockTest {
 
-    private static final Logger logger = LogManager.getLogger(MultiLockTest.class);
+    private static final Logger logger = LogManager.getLogger(DistributedLockTest.class);
 
     private AnnotationConfigApplicationContext context = null;
     private DeviceStateService deviceStateService = null;
     private String device = "Apple-ipad";
     private String device2 = "Microsoft-Surface";
 
-    private LockPartitioner lockPartitioner = new DefaultLockPartitioner(2);
-
-    class DeviceStateEvent implements LockEvent {
-
-        private DeviceState newDeviceState;
-
-        DeviceStateEvent(DeviceState newDeviceState) {
-            this.newDeviceState = newDeviceState;
-        }
-
-        @Override
-        public void setId() {
-
-        }
-
-        @Override
-        public Object getId() {
-            return newDeviceState.getDevice();
-        }
-
-        @Override
-        public void acquired() {
-
-            try {
-
-                DeviceState persistedDeviceState = deviceStateService.get(newDeviceState.getDevice());
-                String oldState = persistedDeviceState.getState();
-                persistedDeviceState.setState(newDeviceState.getState());
-                deviceStateService.add(persistedDeviceState);
-                logger.info(oldState + " --> " + persistedDeviceState.getState());
-            } catch (Exception e) {
-                logger.info(e);
-            }
-        }
-    }
-
+    private LockPartitioner lockPartitioner = new DistributedLockPartitioner(2);
 
     @BeforeClass
     public void beforeClass() {
@@ -90,7 +55,8 @@ public class MultiLockTest {
     this test will NOT throw optimistic lock exceptions
     the db updates are staged in a lock-free queue and dispatched to db in the background
      */
-    @Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
+    @Test
+            //(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
     public void theTest() {
 
         updateDevice(device);
@@ -104,13 +70,19 @@ public class MultiLockTest {
         newDeviceState.setDevice(device);
         newDeviceState.setState(state);
 
-        DeviceStateEvent deviceStateEvent = new DeviceStateEvent(newDeviceState);
+        DeviceStateEvent deviceStateEvent = new DeviceStateEvent(deviceStateService, newDeviceState);
         LockManager lockManager = lockPartitioner.getPartition(deviceStateEvent);
         lockManager.lock(deviceStateEvent);
     }
 
     @AfterClass
     public void afterClass() {
+
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         lockPartitioner.shutdown();
 
