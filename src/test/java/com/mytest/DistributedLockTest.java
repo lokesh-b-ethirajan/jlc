@@ -4,6 +4,7 @@ import com.jlc.*;
 import com.myevent.DeviceStateEvent;
 import com.mymodel.DeviceState;
 import com.myservice.DeviceStateService;
+import com.myservice.MyServiceFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -22,8 +23,6 @@ public class DistributedLockTest {
 
     private static final Logger logger = LogManager.getLogger(DistributedLockTest.class);
 
-    private AnnotationConfigApplicationContext context = null;
-    private DeviceStateService deviceStateService = null;
     private String device = "Apple-ipad";
     private String device2 = "Microsoft-Surface";
 
@@ -31,9 +30,6 @@ public class DistributedLockTest {
 
     @BeforeClass
     public void beforeClass() {
-
-        context = new AnnotationConfigApplicationContext(AppConfig.class);
-        deviceStateService = context.getBean(DeviceStateService.class);
 
         addDevice(device);
         addDevice(device2);
@@ -48,15 +44,14 @@ public class DistributedLockTest {
 
         logger.info(state);
 
-        deviceStateService.add(deviceState);
+        MyServiceFactory.getMyServiceFactory().getDeviceStateService().add(deviceState);
     }
 
     /*
     this test will NOT throw optimistic lock exceptions
     the db updates are staged in a lock-free queue and dispatched to db in the background
      */
-    @Test
-            //(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
+    @Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
     public void theTest() {
 
         updateDevice(device);
@@ -70,7 +65,7 @@ public class DistributedLockTest {
         newDeviceState.setDevice(device);
         newDeviceState.setState(state);
 
-        DeviceStateEvent deviceStateEvent = new DeviceStateEvent(deviceStateService, newDeviceState);
+        DeviceStateEvent deviceStateEvent = new DeviceStateEvent(newDeviceState);
         LockManager lockManager = lockPartitioner.getPartition(deviceStateEvent);
         lockManager.lock(deviceStateEvent);
     }
@@ -86,12 +81,13 @@ public class DistributedLockTest {
 
         lockPartitioner.shutdown();
 
-        for(DeviceState deviceState : deviceStateService.list()) {
+        for(DeviceState deviceState : MyServiceFactory.getMyServiceFactory().getDeviceStateService().list()) {
             logger.info(deviceState.getDevice() + " : " + deviceState.getState());
-            deviceStateService.delete(deviceState.getDevice());
+            MyServiceFactory.getMyServiceFactory().getDeviceStateService().delete(deviceState.getDevice());
         }
 
-        context.close();
+        MyServiceFactory.getMyServiceFactory().close();
+
     }
 
 }

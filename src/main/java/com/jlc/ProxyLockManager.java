@@ -70,7 +70,7 @@ public class ProxyLockManager implements LockManager {
         while(!shutdownComplete) {
             try {
                 logger.info("Waiting for shutdown..");
-                Thread.sleep(10);
+                TimeUnit.SECONDS.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

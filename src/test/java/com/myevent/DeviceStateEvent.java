@@ -3,6 +3,7 @@ package com.myevent;
 import com.jlc.LockEvent;
 import com.mymodel.DeviceState;
 import com.myservice.DeviceStateService;
+import com.myservice.MyServiceFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,11 +15,9 @@ public class DeviceStateEvent implements LockEvent {
 
     private static final Logger logger = LogManager.getLogger(DeviceStateEvent.class);
 
-    private DeviceStateService deviceStateService = null;
     private DeviceState newDeviceState;
 
-    public DeviceStateEvent(DeviceStateService deviceStateService, DeviceState newDeviceState) {
-        this.deviceStateService = deviceStateService;
+    public DeviceStateEvent(DeviceState newDeviceState) {
         this.newDeviceState = newDeviceState;
     }
 
@@ -36,7 +35,7 @@ public class DeviceStateEvent implements LockEvent {
     public void acquired() {
 
         try {
-
+            DeviceStateService deviceStateService = MyServiceFactory.getMyServiceFactory().getDeviceStateService();
             DeviceState persistedDeviceState = deviceStateService.get(newDeviceState.getDevice());
             String oldState = persistedDeviceState.getState();
             persistedDeviceState.setState(newDeviceState.getState());
