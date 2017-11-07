@@ -32,24 +32,31 @@ public class ProxyLockManager implements LockManager {
     @Override
     public void run() {
 
-        logger.info("Running simple lock manager..");
+        logger.info("Running proxy lock manager..");
 
-        while (!shutdown || !queue.isEmpty()) {
+        while (!shutdown) {
 
-            LockEvent lockEvent = queue.peek();
-            if(lockEvent != null) {
-                try {
-                    lockClient.lock(lockEvent);
-                    release(lockEvent);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    sleep(1);
+            while(!queue.isEmpty()) {
+                LockEvent lockEvent = queue.peek();
+                if(lockEvent != null) {
+                    try {
+                        lockClient.lock(lockEvent);
+                        release(lockEvent);
+                    } catch (Exception e) {
+                        System.out.println("shutdown ? : " + shutdown);
+                        e.printStackTrace();
+                        //TODO: need to find a better way
+                        // we can consider persisting the queue
+                        if(shutdown) {
+                            queue.clear();
+                        } else {
+                            sleep(10);
+                        }
+                    }
                 }
             }
-            else
-            {
-                sleep(1);
-            }
+
+            sleep(1);
         }
 
         shutdownComplete = true;
@@ -68,12 +75,8 @@ public class ProxyLockManager implements LockManager {
         this.shutdown = true;
 
         while(!shutdownComplete) {
-            try {
-                logger.info("Waiting for shutdown..");
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            logger.info("Waiting for shutdown..");
+            sleep(10);
         }
     }
 
@@ -81,10 +84,6 @@ public class ProxyLockManager implements LockManager {
     public void lock(LockEvent lockEvent) {
         queue.add(lockEvent);
         logger.info("added lock event to queue");
-    }
-
-    public boolean isEmpty() {
-        return queue.isEmpty();
     }
 
     private void release(LockEvent lockEvent) {
