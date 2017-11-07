@@ -15,23 +15,23 @@ SimpleLockManager will allow to lock resources and update them atomically and se
 
 Example #1: To lock resources across mulitple threads in a single Java application
 
-LockEvent lockEvent = new DeviceStateEvent(newDeviceState);
-LockManager lockManager = new SimpleLockManager();
-lockManager.lock(lockEvent);
+>> LockEvent lockEvent = new DeviceStateEvent(newDeviceState); <br/>
+>> LockManager lockManager = new SimpleLockManager(); <br/>
+>> lockManager.lock(lockEvent);
 
 Example #2: To lock resources across mulitple threads in a single Java application using partitions
 
-LockEvent lockEvent = new DeviceStateEvent(newDeviceState);
-LockPartitioner lockPartitioner = new DefaultLockPartitioner(2);
-LockManager lockManager = lockPartitioner.getPartition(deviceStateEvent);
-lockManager.lock(deviceStateEvent);
+>> LockEvent lockEvent = new DeviceStateEvent(newDeviceState); <br/>
+>> LockPartitioner lockPartitioner = new DefaultLockPartitioner(2); <br/>
+>> LockManager lockManager = lockPartitioner.getPartition(deviceStateEvent); <br/>
+>> lockManager.lock(deviceStateEvent);
 
 Example #3: To lock resources across mulitple processes/machines (Distributed Locking)
 
-LockEvent lockEvent = new DeviceStateEvent(newDeviceState);
-JSONPartitionConfig jsonPartitionConfig = new JSONPartitionConfig(new File(resource.getFile())); 
-LockPartitioner lockPartitioner = new DistributedLockPartitioner(jsonPartitionConfig.getPartitionConfigs());
-LockManager lockManager = lockPartitioner.getPartition(deviceStateEvent);
-lockManager.lock(deviceStateEvent);
+>> LockEvent lockEvent = new DeviceStateEvent(newDeviceState); <br/>
+>> JSONPartitionConfig jsonPartitionConfig = new JSONPartitionConfig(new File(resource.getFile())); <br/> 
+>> LockPartitioner lockPartitioner = new DistributedLockPartitioner(jsonPartitionConfig.getPartitionConfigs()); <br/>
+>> LockManager lockManager = lockPartitioner.getPartition(deviceStateEvent); <br/>
+>> lockManager.lock(deviceStateEvent);
 
 
