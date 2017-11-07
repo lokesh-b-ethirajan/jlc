@@ -3,6 +3,7 @@ package com.mytest;
 import com.jlc.LockEvent;
 import com.jlc.LockManager;
 import com.jlc.SimpleLockManager;
+import com.myevent.DeviceStateEvent;
 import com.mymodel.DeviceState;
 import com.myservice.DeviceStateService;
 import org.apache.logging.log4j.LogManager;
@@ -27,41 +28,6 @@ public class SingleLockTest {
     String device = "Apple-ipad";
 
     private LockManager lockManager = new SimpleLockManager();
-
-    class DeviceStateEvent implements LockEvent {
-
-        private DeviceState newDeviceState;
-
-        DeviceStateEvent(DeviceState newDeviceState) {
-            this.newDeviceState = newDeviceState;
-        }
-
-        @Override
-        public void setId() {
-
-        }
-
-        @Override
-        public Object getId() {
-            return device;
-        }
-
-        @Override
-        public void acquired() {
-
-            try {
-
-                DeviceState persistedDeviceState = deviceStateService.get(newDeviceState.getDevice());
-                String oldState = persistedDeviceState.getState();
-                persistedDeviceState.setState(newDeviceState.getState());
-                deviceStateService.add(persistedDeviceState);
-                logger.info(oldState + " --> " + persistedDeviceState.getState());
-            } catch (Exception e) {
-                logger.info(e);
-            }
-        }
-    }
-
 
     @BeforeClass
     public void beforeClass() {

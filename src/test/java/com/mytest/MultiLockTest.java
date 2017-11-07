@@ -1,6 +1,7 @@
 package com.mytest;
 
 import com.jlc.*;
+import com.myevent.DeviceStateEvent;
 import com.mymodel.DeviceState;
 import com.myservice.DeviceStateService;
 import org.apache.logging.log4j.LogManager;
@@ -28,41 +29,6 @@ public class MultiLockTest {
     private String device2 = "Microsoft-Surface";
 
     private LockPartitioner lockPartitioner = new DefaultLockPartitioner(2);
-
-    class DeviceStateEvent implements LockEvent {
-
-        private DeviceState newDeviceState;
-
-        DeviceStateEvent(DeviceState newDeviceState) {
-            this.newDeviceState = newDeviceState;
-        }
-
-        @Override
-        public void setId() {
-
-        }
-
-        @Override
-        public Object getId() {
-            return newDeviceState.getDevice();
-        }
-
-        @Override
-        public void acquired() {
-
-            try {
-
-                DeviceState persistedDeviceState = deviceStateService.get(newDeviceState.getDevice());
-                String oldState = persistedDeviceState.getState();
-                persistedDeviceState.setState(newDeviceState.getState());
-                deviceStateService.add(persistedDeviceState);
-                logger.info(oldState + " --> " + persistedDeviceState.getState());
-            } catch (Exception e) {
-                logger.info(e);
-            }
-        }
-    }
-
 
     @BeforeClass
     public void beforeClass() {
