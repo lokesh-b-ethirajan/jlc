@@ -1,6 +1,8 @@
 package com.mytest;
 
 import com.jlc.*;
+import com.jlc.config.JSONPartitionConfig;
+import com.jlc.config.PartitionConfig;
 import com.myevent.DeviceStateEvent;
 import com.mymodel.DeviceState;
 import com.myservice.DeviceStateService;
@@ -12,6 +14,11 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -26,10 +33,14 @@ public class DistributedLockTest {
     private String device = "Apple-ipad";
     private String device2 = "Microsoft-Surface";
 
-    private LockPartitioner lockPartitioner = new DistributedLockPartitioner(2);
+    private LockPartitioner lockPartitioner = null;
 
     @BeforeClass
-    public void beforeClass() {
+    public void beforeClass() throws FileNotFoundException, URISyntaxException {
+
+        URL resource = getClass().getClassLoader().getResource("partition-config.json");
+        JSONPartitionConfig jsonPartitionConfig = new JSONPartitionConfig(new File(resource.getFile()));
+        lockPartitioner = new DistributedLockPartitioner(jsonPartitionConfig.getPartitionConfigs());
 
         addDevice(device);
         addDevice(device2);

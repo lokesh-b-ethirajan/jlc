@@ -68,12 +68,8 @@ public class ProxyLockManager implements LockManager {
         this.shutdown = true;
 
         while(!shutdownComplete) {
-            try {
-                logger.info("Waiting for shutdown..");
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            logger.info("Waiting for shutdown..");
+            sleep(10);
         }
     }
 
@@ -81,10 +77,6 @@ public class ProxyLockManager implements LockManager {
     public void lock(LockEvent lockEvent) {
         queue.add(lockEvent);
         logger.info("added lock event to queue");
-    }
-
-    public boolean isEmpty() {
-        return queue.isEmpty();
     }
 
     private void release(LockEvent lockEvent) {

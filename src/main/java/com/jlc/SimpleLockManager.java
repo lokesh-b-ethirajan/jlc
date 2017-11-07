@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
@@ -38,7 +39,7 @@ public class SimpleLockManager implements LockManager {
             else
             {
                 try {
-                    Thread.sleep(1);
+                    TimeUnit.MILLISECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -55,7 +56,7 @@ public class SimpleLockManager implements LockManager {
         while(!shutdownComplete) {
             try {
                 logger.info("Waiting for shutdown..");
-                Thread.sleep(10);
+                TimeUnit.SECONDS.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -66,10 +67,6 @@ public class SimpleLockManager implements LockManager {
     public void lock(LockEvent lockEvent) {
         queue.add(lockEvent);
         logger.info("added lock event to queue");
-    }
-
-    public boolean isEmpty() {
-        return queue.isEmpty();
     }
 
     private void release(LockEvent lockEvent) {

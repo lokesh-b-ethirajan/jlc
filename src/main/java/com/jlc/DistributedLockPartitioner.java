@@ -1,5 +1,6 @@
 package com.jlc;
 
+import com.jlc.config.PartitionConfig;
 import com.jlc.net.LockServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,23 +17,22 @@ public class DistributedLockPartitioner implements LockPartitioner {
     private LockManager[] lockManagers = null;
     private LockServer lockServer = null;
 
-    public DistributedLockPartitioner(int partition) {
+    public DistributedLockPartitioner(PartitionConfig[] partitionConfigs) {
 
-        this.partition = partition;
+        this.partition = partitionConfigs.length;
         lockManagers = new LockManager[this.partition];
 
-        for(int i=0; i<this.partition; i++) {
-            if(i == 0) {
+        for(int i=0; i<partitionConfigs.length; i++) {
+            PartitionConfig partitionConfig = partitionConfigs[i];
+            if(partitionConfig.getType().equals("local")) {
                 SimpleLockManager simpleLockManager = new SimpleLockManager();
-                lockServer = new LockServer(8040);
+                lockServer = new LockServer(partitionConfig.getPort());
                 lockServer.setSimpleLockManager(simpleLockManager);
                 lockManagers[i] = simpleLockManager;
-            }
-            else {
-                lockManagers[i] = new ProxyLockManager("localhost", 8040);
+            } else {
+                lockManagers[i] = new ProxyLockManager(partitionConfig.getHost(), partitionConfig.getPort());
             }
         }
-
     }
 
     public int getPartition() {
