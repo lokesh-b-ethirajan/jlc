@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
@@ -96,11 +97,7 @@ public class LockServer implements Runnable {
         shutdown = true;
 
         while (!shutdownComplete) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            sleep(1);
         }
     }
 
@@ -118,10 +115,19 @@ public class LockServer implements Runnable {
                 e.printStackTrace();
                 logger.error(e);
                 cleanup();
+                sleep(10);
             }
         }
 
         shutdownComplete = true;
 
+    }
+
+    private void sleep(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

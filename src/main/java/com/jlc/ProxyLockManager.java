@@ -32,24 +32,31 @@ public class ProxyLockManager implements LockManager {
     @Override
     public void run() {
 
-        logger.info("Running simple lock manager..");
+        logger.info("Running proxy lock manager..");
 
-        while (!shutdown || !queue.isEmpty()) {
+        while (!shutdown) {
 
-            LockEvent lockEvent = queue.peek();
-            if(lockEvent != null) {
-                try {
-                    lockClient.lock(lockEvent);
-                    release(lockEvent);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    sleep(1);
+            while(!queue.isEmpty()) {
+                LockEvent lockEvent = queue.peek();
+                if(lockEvent != null) {
+                    try {
+                        lockClient.lock(lockEvent);
+                        release(lockEvent);
+                    } catch (Exception e) {
+                        System.out.println("shutdown ? : " + shutdown);
+                        e.printStackTrace();
+                        //TODO: need to find a better way
+                        // we can consider persisting the queue
+                        if(shutdown) {
+                            queue.clear();
+                        } else {
+                            sleep(10);
+                        }
+                    }
                 }
             }
-            else
-            {
-                sleep(1);
-            }
+
+            sleep(1);
         }
 
         shutdownComplete = true;

@@ -56,6 +56,7 @@ public class DistributedLockPartitioner implements LockPartitioner {
     public void shutdown() {
         lockServer.shutdown();
         for(LockManager lockManager : getAllPartitions()) {
+            logger.info("shutting down..." + lockManager);
             lockManager.shutdown();
         }
     }

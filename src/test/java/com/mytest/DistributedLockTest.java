@@ -42,6 +42,8 @@ public class DistributedLockTest {
         JSONPartitionConfig jsonPartitionConfig = new JSONPartitionConfig(new File(resource.getFile()));
         lockPartitioner = new DistributedLockPartitioner(jsonPartitionConfig.getPartitionConfigs());
 
+        logger.info("no of partitions -> " + lockPartitioner.getAllPartitions().length);
+
         addDevice(device);
         addDevice(device2);
 
