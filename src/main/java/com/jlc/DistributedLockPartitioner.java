@@ -41,7 +41,7 @@ public class DistributedLockPartitioner implements LockPartitioner {
 
     @Override
     public LockManager getPartition(LockEvent lockEvent) {
-        int partitionNumber = lockEvent.getId().hashCode() % getPartition();
+        int partitionNumber = Math.abs(lockEvent.getId().hashCode() % getPartition());
         if(logger.isDebugEnabled())
             logger.debug("Returning partition for " + lockEvent.getId() + " -> " + partitionNumber);
         return lockManagers[partitionNumber];
