@@ -3,8 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jlc.iml" filepath="$PROJECT_DIR$/jlc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc_main.iml" group="jlc" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc_test.iml" group="jlc" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-core.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-core.iml" group="jlc-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_main.iml" group="jlc-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_test.iml" group="jlc-core" />
     </modules>
   </component>
 </project>

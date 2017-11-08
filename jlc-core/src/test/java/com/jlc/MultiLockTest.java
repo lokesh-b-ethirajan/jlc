@@ -1,38 +1,28 @@
 package com.jlc;
 
-import com.jlc.config.JSONPartitionConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.UUID;
 
 /**
  * @author lokesh
  */
 
-public class DistributedLockTest {
+public class MultiLockTest {
 
-    private static final Logger logger = LogManager.getLogger(DistributedLockTest.class);
+    private static final Logger logger = LogManager.getLogger(MultiLockTest.class);
 
     private LockPartitioner lockPartitioner = null;
     private UUID uuid1 = UUID.randomUUID();
     private UUID uuid2 = UUID.randomUUID();
 
     @BeforeClass
-    public void beforeClass() throws FileNotFoundException, URISyntaxException {
-
-        URL resource = getClass().getClassLoader().getResource("partition-config.json");
-        JSONPartitionConfig jsonPartitionConfig = new JSONPartitionConfig(new File(resource.getFile()));
-        lockPartitioner = new DistributedLockPartitioner(jsonPartitionConfig.getPartitionConfigs());
-        logger.info("no of partitions -> " + lockPartitioner.getAllPartitions().length);
-
+    public void beforeClass() {
+        lockPartitioner = new DefaultLockPartitioner(2);
     }
 
     @Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
@@ -49,7 +39,6 @@ public class DistributedLockTest {
         lockPartitioner.getPartition(lockEvent2).lock(lockEvent2);
 
     }
-
 
     @AfterClass
     public void afterClass() {

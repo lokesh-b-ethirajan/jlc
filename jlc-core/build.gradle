@@ -1,4 +1,4 @@
-group 'jlc'
+group 'com.jlc'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'

@@ -1,4 +1,4 @@
-# jlc
+# com.jlc
 Java Lock Coordinator
 
 Locking is essential to avoid multiple concurrent updates to overwrite data from each other. Optimistic Locking is a technique that will check the object version before writing to the database. If there is a version conflict, the transaction is aborted and an error message is returned.
