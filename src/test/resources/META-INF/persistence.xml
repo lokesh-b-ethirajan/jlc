@@ -8,7 +8,7 @@
         <description> Spring Hibernate JPA Configuration Example</description>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>com.mymodel.DeviceState</class>
+        <class>DeviceState</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />

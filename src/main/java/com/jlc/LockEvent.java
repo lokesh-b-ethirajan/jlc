@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public interface LockEvent extends Serializable {
 
-    void setId();
+    void setId(Object id);
     Object getId();
     void acquired();
 }
