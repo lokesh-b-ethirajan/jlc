@@ -112,7 +112,6 @@ public class LockServer implements Runnable {
                 if(simpleLockManager != null)
                     simpleLockManager.lock(lockEvent);
             } catch (Exception e) {
-                e.printStackTrace();
                 logger.error(e);
                 cleanup();
                 sleep(10);

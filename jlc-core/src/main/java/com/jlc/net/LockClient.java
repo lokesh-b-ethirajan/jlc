@@ -49,7 +49,6 @@ public class LockClient {
             getObjectOutputStream().writeObject(lockEvent);
             logger.debug("finished writing.." + lockEvent);
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error(e);
             shutdown();
             throw e;

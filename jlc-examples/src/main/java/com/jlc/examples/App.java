@@ -29,8 +29,9 @@ public class App {
             lockManager.lock(lockEvent);
         }
 
+        System.out.println("press <enter> to quit..");
         Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
+        String line = scanner.nextLine();
 
         lockPartitioner.shutdown();
 

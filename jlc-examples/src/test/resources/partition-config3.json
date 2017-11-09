@@ -7,11 +7,11 @@
   {
     "host": "localhost",
     "port": 8041,
-    "type": "local"
+    "type": "remote"
   },
   {
     "host": "localhost",
     "port": 8042,
-    "type": "remote"
+    "type": "local"
   }
 ]

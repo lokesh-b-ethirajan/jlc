@@ -29,24 +29,29 @@ public class SimpleLockManager implements LockManager {
 
         logger.info("Running simple lock manager..");
 
-        while (!shutdown || !queue.isEmpty()) {
+        while (!shutdown) {
 
             LockEvent lockEvent = queue.peek();
             if(lockEvent != null) {
                 lockEvent.acquired();
                 release(lockEvent);
-            }
-            else
-            {
-                try {
-                    TimeUnit.MILLISECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } else {
+                sleep(1);
             }
         }
 
+        // TODO: consider persisting pending objects
+        logger.error("Shutting down..objects pending in queue -> " + queue.size());
+
         shutdownComplete = true;
+    }
+
+    private void sleep(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

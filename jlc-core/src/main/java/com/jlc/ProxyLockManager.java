@@ -35,28 +35,23 @@ public class ProxyLockManager implements LockManager {
 
         while (!shutdown) {
 
-            while(!queue.isEmpty()) {
-                LockEvent lockEvent = queue.peek();
-                if(lockEvent != null) {
-                    try {
-                        lockClient.lock(lockEvent);
-                        release(lockEvent);
-                    } catch (Exception e) {
-                        System.out.println("shutdown ? : " + shutdown);
-                        e.printStackTrace();
-                        //TODO: need to find a better way
-                        // we can consider persisting the queue
-                        if(shutdown) {
-                            queue.clear();
-                        } else {
-                            sleep(10);
-                        }
-                    }
+            LockEvent lockEvent = queue.peek();
+            if(lockEvent != null) {
+                try
+                {
+                    lockClient.lock(lockEvent);
+                    release(lockEvent);
+                } catch (Exception e) {
+                    logger.error("unable to send the lock request, will retry after sometime : " + e);
+                    sleep(2);
                 }
+            } else {
+                sleep(1);
             }
-
-            sleep(1);
         }
+
+        // TODO: consider persisting pending objects
+        logger.error("Shutting down..objects pending in queue -> " + queue.size());
 
         shutdownComplete = true;
     }
@@ -75,8 +70,10 @@ public class ProxyLockManager implements LockManager {
 
         while(!shutdownComplete) {
             logger.info("Waiting for shutdown..");
-            sleep(10);
+            sleep(2);
         }
+
+        logger.info("Shutdown completed");
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.jlc.examples;
 
 import com.jlc.examples.mymodel.DeviceState;
 import com.jlc.examples.myservice.DeviceStateService;
+import com.jlc.examples.myservice.MyServiceFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -19,15 +20,10 @@ public class MyFailingTest {
 
     private static final Logger logger = LogManager.getLogger(MyFailingTest.class);
 
-    private AnnotationConfigApplicationContext context = null;
-    private DeviceStateService deviceStateService = null;
     String device = "Apple-ipad";
 
     @BeforeClass
     public void beforeClass() {
-
-        context = new AnnotationConfigApplicationContext(AppConfig.class);
-        deviceStateService = context.getBean(DeviceStateService.class);
 
         String state = UUID.randomUUID().toString();
         DeviceState deviceState = new DeviceState();
@@ -36,7 +32,7 @@ public class MyFailingTest {
 
         logger.info(state);
 
-        deviceStateService.add(deviceState);
+        MyServiceFactory.getMyServiceFactory().getDeviceStateService().add(deviceState);
 
     }
 
@@ -49,11 +45,11 @@ public class MyFailingTest {
 
         try {
             String state = UUID.randomUUID().toString();
-            DeviceState deviceState = deviceStateService.get(device);
+            DeviceState deviceState = MyServiceFactory.getMyServiceFactory().getDeviceStateService().get(device);
             String oldState = deviceState.getState();
             deviceState.setState(state);
             logger.info(oldState + " --> " + state);
-            deviceStateService.add(deviceState);
+            MyServiceFactory.getMyServiceFactory().getDeviceStateService().add(deviceState);
         } catch (Exception e) {
             logger.error(e);
         }
@@ -62,14 +58,10 @@ public class MyFailingTest {
 
     @AfterClass
     public void afterClass() {
-        for(DeviceState deviceState : deviceStateService.list()) {
+        for(DeviceState deviceState : MyServiceFactory.getMyServiceFactory().getDeviceStateService().list()) {
             logger.info(deviceState.getDevice() + " : " + deviceState.getState());
-            deviceStateService.delete(deviceState.getDevice());
+            MyServiceFactory.getMyServiceFactory().getDeviceStateService().delete(deviceState.getDevice());
         }
-
-        logger.info(deviceStateService.list().size());
-
-        context.close();
     }
 
 }
