@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
@@ -21,6 +22,7 @@ public class SingleLockTest {
 
     @BeforeClass
     public void beforeClass() {
+        TestCounter.clear();
         lockManager = new SimpleLockManager();
     }
 
@@ -36,6 +38,17 @@ public class SingleLockTest {
 
     @AfterClass
     public void afterClass() {
+
+        while(TestCounter.get() != 8) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        TestCounter.clear();
+
         lockManager.shutdown();
     }
 

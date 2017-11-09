@@ -1,7 +1,10 @@
-package com.jlc;
+package com.jlc.examples;
 
+import com.jlc.DistributedLockPartitioner;
+import com.jlc.LockManager;
+import com.jlc.LockPartitioner;
 import com.jlc.config.JSONPartitionConfig;
-import com.jlc.myevent.SampleLockEvent;
+import com.jlc.examples.myevent.SampleLockEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;

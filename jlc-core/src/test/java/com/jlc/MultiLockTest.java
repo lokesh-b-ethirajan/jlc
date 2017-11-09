@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
@@ -22,6 +23,7 @@ public class MultiLockTest {
 
     @BeforeClass
     public void beforeClass() {
+        TestCounter.clear();
         lockPartitioner = new DefaultLockPartitioner(2);
     }
 
@@ -42,6 +44,17 @@ public class MultiLockTest {
 
     @AfterClass
     public void afterClass() {
+
+        while(TestCounter.get() != 16) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        TestCounter.clear();
+
         lockPartitioner.shutdown();
     }
 

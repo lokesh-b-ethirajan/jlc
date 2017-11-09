@@ -1,4 +1,4 @@
-package com.jlc;
+package com.jlc.examples;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

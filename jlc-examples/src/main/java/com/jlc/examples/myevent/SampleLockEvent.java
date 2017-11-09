@@ -1,4 +1,4 @@
-package com.jlc.myevent;
+package com.jlc.examples.myevent;
 
 import com.jlc.LockEvent;
 import org.apache.logging.log4j.LogManager;

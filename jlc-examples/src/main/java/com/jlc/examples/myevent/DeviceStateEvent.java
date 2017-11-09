@@ -1,9 +1,9 @@
-package com.jlc.myevent;
+package com.jlc.examples.myevent;
 
 import com.jlc.LockEvent;
-import com.jlc.mymodel.DeviceState;
-import com.jlc.myservice.DeviceStateService;
-import com.jlc.myservice.MyServiceFactory;
+import com.jlc.examples.mymodel.DeviceState;
+import com.jlc.examples.myservice.DeviceStateService;
+import com.jlc.examples.myservice.MyServiceFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

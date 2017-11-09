@@ -6,6 +6,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-core.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-core.iml" group="jlc-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_main.iml" group="jlc-core" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-core/jlc-core_test.iml" group="jlc-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-examples/jlc-examples.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-examples/jlc-examples.iml" group="jlc-examples" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-examples/jlc-examples_main.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-examples/jlc-examples_main.iml" group="jlc-examples" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jlc-examples/jlc-examples_test.iml" filepath="$PROJECT_DIR$/.idea/modules/jlc-examples/jlc-examples_test.iml" group="jlc-examples" />
     </modules>
   </component>
 </project>

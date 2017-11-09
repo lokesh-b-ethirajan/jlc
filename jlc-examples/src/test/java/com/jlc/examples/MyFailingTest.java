@@ -1,8 +1,7 @@
 package com.jlc.examples;
 
-import com.jlc.AppConfig;
-import com.jlc.mymodel.DeviceState;
-import com.jlc.myservice.DeviceStateService;
+import com.jlc.examples.mymodel.DeviceState;
+import com.jlc.examples.myservice.DeviceStateService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

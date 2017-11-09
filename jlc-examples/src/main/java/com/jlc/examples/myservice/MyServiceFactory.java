@@ -1,6 +1,6 @@
-package com.jlc.myservice;
+package com.jlc.examples.myservice;
 
-import com.jlc.AppConfig;
+import com.jlc.examples.AppConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**

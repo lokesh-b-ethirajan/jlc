@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
@@ -27,7 +28,7 @@ public class DistributedLockTest {
 
     @BeforeClass
     public void beforeClass() throws FileNotFoundException, URISyntaxException {
-
+        TestCounter.clear();
         URL resource = getClass().getClassLoader().getResource("partition-config.json");
         JSONPartitionConfig jsonPartitionConfig = new JSONPartitionConfig(new File(resource.getFile()));
         lockPartitioner = new DistributedLockPartitioner(jsonPartitionConfig.getPartitionConfigs());
@@ -52,6 +53,17 @@ public class DistributedLockTest {
 
     @AfterClass
     public void afterClass() {
+
+        while(TestCounter.get() != 16) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        TestCounter.clear();
+
         lockPartitioner.shutdown();
     }
 

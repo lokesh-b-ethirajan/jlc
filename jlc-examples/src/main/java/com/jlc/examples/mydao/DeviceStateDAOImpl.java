@@ -1,6 +1,6 @@
-package com.jlc.mydao;
+package com.jlc.examples.mydao;
 
-import com.jlc.mymodel.DeviceState;
+import com.jlc.examples.mymodel.DeviceState;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

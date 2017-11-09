@@ -61,6 +61,8 @@ public class SimpleLockManager implements LockManager {
                 e.printStackTrace();
             }
         }
+
+        logger.info("Shutdown completed");
     }
 
     @Override

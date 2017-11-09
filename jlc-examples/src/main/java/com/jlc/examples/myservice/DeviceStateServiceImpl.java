@@ -1,7 +1,7 @@
-package com.jlc.myservice;
+package com.jlc.examples.myservice;
 
-import com.jlc.mydao.DeviceStateDAO;
-import com.jlc.mymodel.DeviceState;
+import com.jlc.examples.mydao.DeviceStateDAO;
+import com.jlc.examples.mymodel.DeviceState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -27,6 +27,7 @@ public class SampleLockEvent implements LockEvent {
     @Override
     public void acquired() {
         logger.info("lock acquired -> " + id);
+        TestCounter.increment();
     }
 
     public String getState() {

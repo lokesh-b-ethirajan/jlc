@@ -12,6 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/jlc-core" />
+            <option value="$PROJECT_DIR$/jlc-examples" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />
