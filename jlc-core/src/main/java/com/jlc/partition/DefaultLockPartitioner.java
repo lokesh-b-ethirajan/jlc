@@ -1,5 +1,8 @@
-package com.jlc;
+package com.jlc.partition;
 
+import com.jlc.event.LockEvent;
+import com.jlc.mgr.LockManager;
+import com.jlc.mgr.SimpleLockManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

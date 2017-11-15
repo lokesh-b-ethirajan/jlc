@@ -1,4 +1,7 @@
-package com.jlc;
+package com.jlc.partition;
+
+import com.jlc.event.LockEvent;
+import com.jlc.mgr.LockManager;
 
 /**
  * @author lokesh

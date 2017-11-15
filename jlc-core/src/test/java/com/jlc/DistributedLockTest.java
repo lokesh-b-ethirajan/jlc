@@ -1,6 +1,8 @@
 package com.jlc;
 
 import com.jlc.config.JSONPartitionConfig;
+import com.jlc.partition.DistributedLockPartitioner;
+import com.jlc.partition.LockPartitioner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterClass;

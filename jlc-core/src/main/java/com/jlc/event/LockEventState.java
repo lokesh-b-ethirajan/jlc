@@ -1,4 +1,4 @@
-package com.jlc;
+package com.jlc.event;
 
 import java.io.Serializable;
 

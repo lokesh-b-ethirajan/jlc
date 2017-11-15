@@ -1,6 +1,6 @@
 package com.jlc.net;
 
-import com.jlc.LockEvent;
+import com.jlc.event.LockEvent;
 
 /**
  * @author lokesh

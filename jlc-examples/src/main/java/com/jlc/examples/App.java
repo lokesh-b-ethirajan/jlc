@@ -1,8 +1,8 @@
 package com.jlc.examples;
 
-import com.jlc.DistributedLockPartitioner;
-import com.jlc.LockManager;
-import com.jlc.LockPartitioner;
+import com.jlc.partition.DistributedLockPartitioner;
+import com.jlc.mgr.LockManager;
+import com.jlc.partition.LockPartitioner;
 import com.jlc.config.JSONPartitionConfig;
 import com.jlc.examples.myevent.SampleLockEvent;
 

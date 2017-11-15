@@ -1,6 +1,6 @@
 package com.jlc.net;
 
-import com.jlc.LockEvent;
+import com.jlc.event.LockEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

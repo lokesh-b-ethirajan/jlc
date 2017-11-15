@@ -1,7 +1,7 @@
 package com.jlc.net;
 
-import com.jlc.LockEvent;
-import com.jlc.SimpleLockManager;
+import com.jlc.event.LockEvent;
+import com.jlc.mgr.SimpleLockManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

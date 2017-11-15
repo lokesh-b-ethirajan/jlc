@@ -1,6 +1,6 @@
 package com.jlc.examples.myevent;
 
-import com.jlc.LockEvent;
+import com.jlc.event.LockEvent;
 import com.jlc.examples.mymodel.DeviceState;
 import com.jlc.examples.myservice.DeviceStateService;
 import com.jlc.examples.myservice.MyServiceFactory;

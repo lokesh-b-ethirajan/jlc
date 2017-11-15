@@ -1,5 +1,7 @@
 package com.jlc;
 
+import com.jlc.event.LockEvent;
+import com.jlc.event.LockEventState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +14,7 @@ public class SampleLockEvent implements LockEvent {
     private static final Logger logger = LogManager.getLogger(SampleLockEvent.class);
 
     private Object id = null;
-    private String state = null;
+    private LockEventState lockEventState = LockEventState.REQUESTED;
 
     @Override
     public void setId(Object id) {
@@ -25,16 +27,33 @@ public class SampleLockEvent implements LockEvent {
     }
 
     @Override
+    public void setState(LockEventState lockEventState) {
+        this.lockEventState = lockEventState;
+    }
+
+    @Override
+    public LockEventState getState() {
+        return lockEventState;
+    }
+
+    @Override
     public void acquired() {
         logger.info("lock acquired -> " + id);
         TestCounter.increment();
     }
 
-    public String getState() {
-        return state;
+    @Override
+    public void released() {
+
     }
 
-    public void setState(String state) {
-        this.state = state;
+    @Override
+    public void requested() {
+
+    }
+
+    @Override
+    public void queued() {
+
     }
 }
