@@ -9,38 +9,15 @@ import org.apache.logging.log4j.Logger;
  * @author lokesh
  */
 
-public class SampleLockEvent implements LockEvent {
+public class SampleLockEvent extends LockEvent {
 
     private static final Logger logger = LogManager.getLogger(SampleLockEvent.class);
-
-    private Object id = null;
-    private LockEventState lockEventState = LockEventState.REQUESTED;
 
     private String payload = null;
 
     @Override
-    public void setId(Object id) {
-        this.id = id;
-    }
-
-    @Override
-    public Object getId() {
-        return id;
-    }
-
-    @Override
-    public void setState(LockEventState lockEventState) {
-        this.lockEventState = lockEventState;
-    }
-
-    @Override
-    public LockEventState getState() {
-        return lockEventState;
-    }
-
-    @Override
     public void acquired() {
-        logger.info("lock acquired -> " + id);
+        logger.info("lock acquired -> " + getId());
         TestCounter.increment();
     }
 

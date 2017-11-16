@@ -8,22 +8,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
- * an extension of simple lock manager proxying lock requests to remote nodes using a transport strategy
+ * proxying lock requests to remote nodes using a transport strategy
  */
 
-public class ProxyLockManager extends SimpleLockManager implements TransportListener {
+public class ProxyLockManager implements LockManager, TransportListener {
 
     private static final Logger logger = LogManager.getLogger(ProxyLockManager.class);
 
+    private volatile boolean shutdown = false;
+    private volatile boolean shutdownComplete = false;
+
+    private Queue<LockEvent> queue = new ConcurrentLinkedQueue<>();
     private TransportStrategy transportStrategy;
 
     public ProxyLockManager(TransportStrategy transportStrategy) {
         this.transportStrategy = transportStrategy;
         transportStrategy.register(this);
+        new Thread(this).start();
     }
 
     @Override
@@ -37,7 +44,7 @@ public class ProxyLockManager extends SimpleLockManager implements TransportList
             if(lockEvent != null) {
                 try
                 {
-                    send(lockEvent, LockEventState.PROXY_REQUESTED);
+                    send(lockEvent);
                     lockEvent.requested();
                     //TODO: need to release the lock only if ack received from remote peer
                     release(lockEvent);
@@ -60,20 +67,17 @@ public class ProxyLockManager extends SimpleLockManager implements TransportList
     public void received(LockEvent lockEvent) {
 
         if (logger.isDebugEnabled())
-            logger.debug("lock event received -> " + lockEvent.getState());
+            logger.debug("lock event received -> " + lockEvent.getLockEventState());
 
-        switch (lockEvent.getState()) {
+        switch (lockEvent.getLockEventState()) {
 
-            case REQUESTED:
-                // lockEvent.requested(); N/A here
-                break;
-            case QUEUED:
+            case PEER_QUEUED:
                 lockEvent.queued();
                 break;
-            case ACQUIRED:
+            case PEER_ACQUIRED:
                 lockEvent.acquired();
                 break;
-            case RELEASED:
+            case PEER_RELEASED:
                 lockEvent.released();
                 break;
         }
@@ -85,19 +89,47 @@ public class ProxyLockManager extends SimpleLockManager implements TransportList
         if(transportStrategy != null)
             transportStrategy.shutdown();
 
-        super.shutdown();
+        this.shutdown = true;
+
+        while(!shutdownComplete) {
+            try {
+                logger.info("Waiting for shutdown..");
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         logger.info("Shutdown completed");
     }
 
-    private void send(LockEvent lockEvent, LockEventState lockEventState) {
-        lockEvent.setState(lockEventState);
+    @Override
+    public void lock(LockEvent lockEvent) {
+        lockEvent.setLockEventState(LockEventState.PEER_REQUESTED);
+        queue.add(lockEvent);
+        if(logger.isDebugEnabled())
+            logger.debug("added lock event to queue");
+    }
+
+    private void send(LockEvent lockEvent) {
         try {
-            if(transportStrategy != null)
+            if(transportStrategy != null && lockEvent != null)
                 transportStrategy.send(lockEvent);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void sleep(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void release(LockEvent lockEvent) {
+        queue.remove(lockEvent);
     }
 
 }

@@ -16,10 +16,10 @@ public class SimpleLockManager implements LockManager {
 
     private static final Logger logger = LogManager.getLogger(SimpleLockManager.class);
 
-    protected volatile boolean shutdown = false;
-    protected volatile boolean shutdownComplete = false;
+    private volatile boolean shutdown = false;
+    private volatile boolean shutdownComplete = false;
 
-    protected Queue<LockEvent> queue = new ConcurrentLinkedQueue<>();
+    private Queue<LockEvent> queue = new ConcurrentLinkedQueue<>();
 
     public SimpleLockManager() {
         new Thread(this).start();
@@ -47,7 +47,7 @@ public class SimpleLockManager implements LockManager {
         shutdownComplete = true;
     }
 
-    protected void sleep(int seconds) {
+    private void sleep(int seconds) {
         try {
             TimeUnit.SECONDS.sleep(seconds);
         } catch (InterruptedException e) {
@@ -78,7 +78,7 @@ public class SimpleLockManager implements LockManager {
             logger.debug("added lock event to queue");
     }
 
-    protected void release(LockEvent lockEvent) {
+    private void release(LockEvent lockEvent) {
         queue.remove(lockEvent);
     }
 }

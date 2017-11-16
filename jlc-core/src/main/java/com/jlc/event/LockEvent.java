@@ -6,19 +6,30 @@ import java.io.Serializable;
  * @author lokesh
  */
 
-public interface LockEvent extends Serializable {
+public abstract class LockEvent implements Serializable {
 
-    // globally unique id
-    void setId(Object id);
-    Object getId();
+    private Object id = null;
+    private LockEventState lockEventState = LockEventState.INIT;
 
-    // state management
-    void setState(LockEventState lockEventState);
-    LockEventState getState();
+    public Object getId() {
+        return id;
+    }
+
+    public void setId(Object id) {
+        this.id = id;
+    }
+
+    public LockEventState getLockEventState() {
+        return lockEventState;
+    }
+
+    public void setLockEventState(LockEventState lockEventState) {
+        this.lockEventState = lockEventState;
+    }
 
     // actions based on state changes
-    void requested();
-    void queued();
-    void acquired();
-    void released();
+    public abstract void requested();
+    public abstract void queued();
+    public abstract void acquired();
+    public abstract void released();
 }

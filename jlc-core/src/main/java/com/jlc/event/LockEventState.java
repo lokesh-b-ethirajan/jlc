@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 public enum LockEventState implements Serializable {
 
+    INIT,
     REQUESTED,
     QUEUED,
     ACQUIRED,
