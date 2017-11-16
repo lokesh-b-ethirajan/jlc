@@ -58,6 +58,7 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
         return objectInputStream;
     }
 
+    @Override
     public void shutdown() {
 
         shutdown = true;
@@ -131,10 +132,7 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
                 LockEvent lockEvent = (LockEvent) getObjectInputStream().readObject();
                 if(lockEvent != null)
                     transportListener.received(lockEvent);
-            } catch (IOException e) {
-                e.printStackTrace();
-                cleanup();
-            } catch (ClassNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 cleanup();
             }

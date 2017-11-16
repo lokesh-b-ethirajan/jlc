@@ -26,7 +26,6 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
     private ObjectInputStream objectInputStream = null;
     private ObjectOutputStream objectOutputStream = null;
     private TransportListener transportListener = null;
-    private SimpleLockManager simpleLockManager = null;
 
     private volatile boolean shutdown = false;
     private volatile boolean shutdownComplete = false;
@@ -34,10 +33,6 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
     public DefaultServerTransportStrategy(int port) {
         this.port = port;
         new Thread(this).start();
-    }
-
-    public void setSimpleLockManager(SimpleLockManager simpleLockManager) {
-        this.simpleLockManager = simpleLockManager;
     }
 
     private ServerSocket getServerSocket() throws IOException {
@@ -112,6 +107,7 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
         }
     }
 
+    @Override
     public void shutdown() {
         cleanup();
         shutdown = true;
@@ -129,8 +125,8 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
                 logger.debug("waiting for lock events..");
                 LockEvent lockEvent = (LockEvent) getObjectInputStream().readObject();
                 logger.debug(lockEvent);
-                if(simpleLockManager != null)
-                    simpleLockManager.lock(lockEvent);
+                if(transportListener != null)
+                    transportListener.received(lockEvent);
             } catch (Exception e) {
                 logger.error(e);
                 cleanup();

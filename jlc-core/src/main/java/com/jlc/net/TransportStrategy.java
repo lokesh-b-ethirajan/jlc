@@ -12,4 +12,5 @@ public interface TransportStrategy {
 
     void register(TransportListener transportListener);
     void send(LockEvent lockEvent) throws IOException;
+    void shutdown();
 }

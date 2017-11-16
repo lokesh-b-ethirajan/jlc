@@ -33,7 +33,7 @@ public class SingleLockTest {
 
         SampleLockEvent lockEvent = new SampleLockEvent();
         lockEvent.setId(uuid);
-        lockEvent.setState(UUID.randomUUID().toString());
+        lockEvent.setPayload(UUID.randomUUID().toString());
 
         lockManager.lock(lockEvent);
     }

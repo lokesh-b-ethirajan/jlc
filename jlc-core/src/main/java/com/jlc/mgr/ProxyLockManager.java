@@ -1,32 +1,29 @@
 package com.jlc.mgr;
 
 import com.jlc.event.LockEvent;
-import com.jlc.net.LockClient;
+import com.jlc.event.LockEventState;
+import com.jlc.net.TransportListener;
+import com.jlc.net.TransportStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author lokesh
+ * an extension of simple lock manager proxying lock requests to remote nodes using a transport strategy
  */
 
-public class ProxyLockManager implements LockManager {
+public class ProxyLockManager extends SimpleLockManager implements TransportListener {
 
     private static final Logger logger = LogManager.getLogger(ProxyLockManager.class);
 
-    private volatile boolean shutdown = false;
-    private volatile boolean shutdownComplete = false;
+    private TransportStrategy transportStrategy;
 
-    private Queue<LockEvent> queue = new ConcurrentLinkedQueue<>();
-    private LockClient lockClient = null;
-
-    public ProxyLockManager(String host, int port)
-    {
-        lockClient = new LockClient(host, port);
-        new Thread(this).start();
+    public ProxyLockManager(TransportStrategy transportStrategy) {
+        this.transportStrategy = transportStrategy;
+        transportStrategy.register(this);
     }
 
     @Override
@@ -40,7 +37,9 @@ public class ProxyLockManager implements LockManager {
             if(lockEvent != null) {
                 try
                 {
-                    lockClient.lock(lockEvent);
+                    send(lockEvent, LockEventState.PROXY_REQUESTED);
+                    lockEvent.requested();
+                    //TODO: need to release the lock only if ack received from remote peer
                     release(lockEvent);
                 } catch (Exception e) {
                     logger.error("unable to send the lock request, will retry after sometime : " + e);
@@ -57,33 +56,48 @@ public class ProxyLockManager implements LockManager {
         shutdownComplete = true;
     }
 
-    private void sleep(int seconds) {
-        try {
-            TimeUnit.SECONDS.sleep(seconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    @Override
+    public void received(LockEvent lockEvent) {
+
+        if (logger.isDebugEnabled())
+            logger.debug("lock event received -> " + lockEvent.getState());
+
+        switch (lockEvent.getState()) {
+
+            case REQUESTED:
+                // lockEvent.requested(); N/A here
+                break;
+            case QUEUED:
+                lockEvent.queued();
+                break;
+            case ACQUIRED:
+                lockEvent.acquired();
+                break;
+            case RELEASED:
+                lockEvent.released();
+                break;
         }
     }
 
     @Override
     public void shutdown() {
-        this.shutdown = true;
 
-        while(!shutdownComplete) {
-            logger.info("Waiting for shutdown..");
-            sleep(2);
-        }
+        if(transportStrategy != null)
+            transportStrategy.shutdown();
+
+        super.shutdown();
 
         logger.info("Shutdown completed");
     }
 
-    @Override
-    public void lock(LockEvent lockEvent) {
-        queue.add(lockEvent);
-        logger.info("added lock event to queue");
+    private void send(LockEvent lockEvent, LockEventState lockEventState) {
+        lockEvent.setState(lockEventState);
+        try {
+            if(transportStrategy != null)
+                transportStrategy.send(lockEvent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void release(LockEvent lockEvent) {
-        queue.remove(lockEvent);
-    }
 }

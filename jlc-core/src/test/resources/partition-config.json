@@ -2,11 +2,13 @@
     {
       "host": "localhost",
       "port": 8040,
-      "type": "local"
+      "type": "local",
+      "transport": "DefaultServerTransportStrategy"
     },
     {
       "host": "localhost",
       "port": 8040,
-      "type": "remote"
+      "type": "remote",
+      "transport": "DefaultClientTransportStrategy"
     }
 ]

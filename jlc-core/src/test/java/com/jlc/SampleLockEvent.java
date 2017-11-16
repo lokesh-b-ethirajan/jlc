@@ -16,6 +16,8 @@ public class SampleLockEvent implements LockEvent {
     private Object id = null;
     private LockEventState lockEventState = LockEventState.REQUESTED;
 
+    private String payload = null;
+
     @Override
     public void setId(Object id) {
         this.id = id;
@@ -55,5 +57,13 @@ public class SampleLockEvent implements LockEvent {
     @Override
     public void queued() {
 
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 }

@@ -1,6 +1,7 @@
 package com.jlc.mgr;
 
 import com.jlc.event.LockEvent;
+import com.jlc.net.LockClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,30 +13,39 @@ import java.util.concurrent.TimeUnit;
  * @author lokesh
  */
 
-public class SimpleLockManager implements LockManager {
+public class ProxyLockManager1 implements LockManager {
 
-    private static final Logger logger = LogManager.getLogger(SimpleLockManager.class);
+    private static final Logger logger = LogManager.getLogger(ProxyLockManager1.class);
 
-    protected volatile boolean shutdown = false;
-    protected volatile boolean shutdownComplete = false;
+    private volatile boolean shutdown = false;
+    private volatile boolean shutdownComplete = false;
 
-    protected Queue<LockEvent> queue = new ConcurrentLinkedQueue<>();
+    private Queue<LockEvent> queue = new ConcurrentLinkedQueue<>();
+    private LockClient lockClient = null;
 
-    public SimpleLockManager() {
+    public ProxyLockManager1(String host, int port)
+    {
+        lockClient = new LockClient(host, port);
         new Thread(this).start();
     }
 
     @Override
     public void run() {
 
-        logger.info("Running simple lock manager..");
+        logger.info("Running proxy lock manager..");
 
         while (!shutdown) {
 
             LockEvent lockEvent = queue.peek();
             if(lockEvent != null) {
-                lockEvent.acquired();
-                release(lockEvent);
+                try
+                {
+                    lockClient.lock(lockEvent);
+                    release(lockEvent);
+                } catch (Exception e) {
+                    logger.error("unable to send the lock request, will retry after sometime : " + e);
+                    sleep(2);
+                }
             } else {
                 sleep(1);
             }
@@ -47,7 +57,7 @@ public class SimpleLockManager implements LockManager {
         shutdownComplete = true;
     }
 
-    protected void sleep(int seconds) {
+    private void sleep(int seconds) {
         try {
             TimeUnit.SECONDS.sleep(seconds);
         } catch (InterruptedException e) {
@@ -60,12 +70,8 @@ public class SimpleLockManager implements LockManager {
         this.shutdown = true;
 
         while(!shutdownComplete) {
-            try {
-                logger.info("Waiting for shutdown..");
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            logger.info("Waiting for shutdown..");
+            sleep(2);
         }
 
         logger.info("Shutdown completed");
@@ -74,11 +80,10 @@ public class SimpleLockManager implements LockManager {
     @Override
     public void lock(LockEvent lockEvent) {
         queue.add(lockEvent);
-        if(logger.isDebugEnabled())
-            logger.debug("added lock event to queue");
+        logger.info("added lock event to queue");
     }
 
-    protected void release(LockEvent lockEvent) {
+    private void release(LockEvent lockEvent) {
         queue.remove(lockEvent);
     }
 }

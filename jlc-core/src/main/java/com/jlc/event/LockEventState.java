@@ -11,5 +11,9 @@ public enum LockEventState implements Serializable {
     REQUESTED,
     QUEUED,
     ACQUIRED,
-    RELEASED
+    RELEASED,
+    PEER_REQUESTED,
+    PEER_QUEUED,
+    PEER_ACQUIRED,
+    PEER_RELEASED
 }

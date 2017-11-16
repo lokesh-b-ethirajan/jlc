@@ -34,12 +34,12 @@ public class MultiLockTest {
 
         SampleLockEvent lockEvent1 = new SampleLockEvent();
         lockEvent1.setId(uuid1);
-        lockEvent1.setState(UUID.randomUUID().toString());
+        lockEvent1.setPayload(UUID.randomUUID().toString());
         lockPartitioner.getPartition(lockEvent1).lock(lockEvent1);
 
         SampleLockEvent lockEvent2 = new SampleLockEvent();
         lockEvent2.setId(uuid2);
-        lockEvent2.setState(UUID.randomUUID().toString());
+        lockEvent2.setPayload(UUID.randomUUID().toString());
         lockPartitioner.getPartition(lockEvent2).lock(lockEvent2);
 
     }

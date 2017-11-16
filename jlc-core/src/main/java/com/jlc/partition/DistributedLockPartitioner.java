@@ -2,10 +2,11 @@ package com.jlc.partition;
 
 import com.jlc.event.LockEvent;
 import com.jlc.config.PartitionConfig;
-import com.jlc.mgr.LockManager;
-import com.jlc.mgr.ProxyLockManager;
-import com.jlc.mgr.SimpleLockManager;
+import com.jlc.mgr.*;
+import com.jlc.net.DefaultClientTransportStrategy;
+import com.jlc.net.DefaultServerTransportStrategy;
 import com.jlc.net.LockServer;
+import com.jlc.net.TransportStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,12 +30,17 @@ public class DistributedLockPartitioner implements LockPartitioner {
         for(int i=0; i<partitionConfigs.length; i++) {
             PartitionConfig partitionConfig = partitionConfigs[i];
             if(partitionConfig.getType().equals("local")) {
-                SimpleLockManager simpleLockManager = new SimpleLockManager();
+                /*SimpleLockManager simpleLockManager = new SimpleLockManager();
                 lockServer = new LockServer(partitionConfig.getPort());
-                lockServer.setSimpleLockManager(simpleLockManager);
-                lockManagers[i] = simpleLockManager;
+                lockServer.setSimpleLockManager(simpleLockManager);*/
+                TransportStrategy transportStrategy = transportStrategy = new DefaultServerTransportStrategy(partitionConfig.getPort());
+                LockManager lockManager = new RemoteLockManager(transportStrategy);
+                lockManagers[i] = lockManager;
             } else {
-                lockManagers[i] = new ProxyLockManager(partitionConfig.getHost(), partitionConfig.getPort());
+                TransportStrategy transportStrategy = transportStrategy = new DefaultClientTransportStrategy(partitionConfig.getHost(), partitionConfig.getPort());
+                LockManager lockManager = new ProxyLockManager(transportStrategy);
+                lockManagers[i] = lockManager;
+                //lockManagers[i] = new ProxyLockManager1(partitionConfig.getHost(), partitionConfig.getPort());
             }
         }
     }
@@ -58,7 +64,7 @@ public class DistributedLockPartitioner implements LockPartitioner {
 
     @Override
     public void shutdown() {
-        lockServer.shutdown();
+        //lockServer.shutdown();
         for(LockManager lockManager : getAllPartitions()) {
             logger.info("shutting down..." + lockManager);
             lockManager.shutdown();
