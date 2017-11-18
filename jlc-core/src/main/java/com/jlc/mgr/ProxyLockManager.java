@@ -58,7 +58,7 @@ public class ProxyLockManager implements LockManager, TransportListener {
         }
 
         // TODO: consider persisting pending objects
-        logger.error("Shutting down..objects pending in queue -> " + queue.size());
+        logger.info("Shutting down..objects pending in queue -> " + queue.size());
 
         shutdownComplete = true;
     }
@@ -67,7 +67,7 @@ public class ProxyLockManager implements LockManager, TransportListener {
     public void received(LockEvent lockEvent) {
 
         if (logger.isDebugEnabled())
-            logger.debug("lock event received -> " + lockEvent.getLockEventState());
+            logger.debug("lock event received -> " + lockEvent.getId() + " : " + lockEvent.getLockEventState() + " : " + lockEvent.i);
 
         switch (lockEvent.getLockEventState()) {
 
@@ -106,18 +106,13 @@ public class ProxyLockManager implements LockManager, TransportListener {
     @Override
     public void lock(LockEvent lockEvent) {
         lockEvent.setLockEventState(LockEventState.PEER_REQUESTED);
+        lockEvent.i++;
         queue.add(lockEvent);
-        if(logger.isDebugEnabled())
-            logger.debug("added lock event to queue");
     }
 
-    private void send(LockEvent lockEvent) {
-        try {
-            if(transportStrategy != null && lockEvent != null)
-                transportStrategy.send(lockEvent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void send(LockEvent lockEvent) throws IOException {
+        if(transportStrategy != null && lockEvent != null)
+            transportStrategy.send(lockEvent);
     }
 
     private void sleep(int seconds) {

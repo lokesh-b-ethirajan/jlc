@@ -31,6 +31,7 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
     public DefaultClientTransportStrategy(String host, int port) {
         this.host = host;
         this.port = port;
+        new Thread(this).start();
     }
 
     private Socket getSocket() throws IOException {
@@ -61,6 +62,8 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
     @Override
     public void shutdown() {
 
+        cleanup();
+
         shutdown = true;
 
         while(!shutdownCompleted) {
@@ -70,8 +73,6 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
                 e.printStackTrace();
             }
         }
-
-        cleanup();
     }
 
     public void cleanup() {
@@ -113,9 +114,9 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
     @Override
     public void send(LockEvent lockEvent) throws IOException {
         try {
-            logger.debug("writing.." + lockEvent);
-            getObjectOutputStream().writeObject(lockEvent);
-            logger.debug("finished writing.." + lockEvent);
+            ObjectOutputStream objectOutputStream = getObjectOutputStream();
+            objectOutputStream.writeObject(lockEvent);
+            objectOutputStream.flush();
         } catch (IOException e) {
             logger.error(e);
             cleanup();
@@ -130,11 +131,19 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
             try {
                 //TODO: figure out a way to interrupt socket wait
                 LockEvent lockEvent = (LockEvent) getObjectInputStream().readObject();
-                if(lockEvent != null)
+                if(lockEvent != null) {
+                    //logger.debug("received.." + lockEvent.getId() + " : " + lockEvent.getLockEventState());
                     transportListener.received(lockEvent);
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                logger.error(e);
                 cleanup();
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
             }
 
         }

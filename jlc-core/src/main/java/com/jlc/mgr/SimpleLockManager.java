@@ -74,8 +74,6 @@ public class SimpleLockManager implements LockManager {
     @Override
     public void lock(LockEvent lockEvent) {
         queue.add(lockEvent);
-        if(logger.isDebugEnabled())
-            logger.debug("added lock event to queue");
     }
 
     private void release(LockEvent lockEvent) {

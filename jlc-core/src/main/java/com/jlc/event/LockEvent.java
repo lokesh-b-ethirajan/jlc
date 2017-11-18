@@ -10,6 +10,7 @@ public abstract class LockEvent implements Serializable {
 
     private Object id = null;
     private LockEventState lockEventState = LockEventState.INIT;
+    public int i = 0;
 
     public Object getId() {
         return id;

@@ -109,7 +109,9 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
 
     @Override
     public void shutdown() {
+
         cleanup();
+
         shutdown = true;
 
         while (!shutdownComplete) {
@@ -122,9 +124,8 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
 
         while(!shutdown) {
             try {
-                logger.debug("waiting for lock events..");
+                logger.info("waiting for lock events..");
                 LockEvent lockEvent = (LockEvent) getObjectInputStream().readObject();
-                logger.debug(lockEvent);
                 if(transportListener != null)
                     transportListener.received(lockEvent);
             } catch (Exception e) {
@@ -154,9 +155,9 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
     @Override
     public void send(LockEvent lockEvent) throws IOException {
         try {
-            logger.debug("writing.." + lockEvent);
-            getObjectOutputStream().writeObject(lockEvent);
-            logger.debug("finished writing.." + lockEvent);
+            ObjectOutputStream objectOutputStream = getObjectOutputStream();
+            objectOutputStream.writeObject(lockEvent);
+            objectOutputStream.flush();
         } catch (IOException e) {
             logger.error(e);
             cleanup();

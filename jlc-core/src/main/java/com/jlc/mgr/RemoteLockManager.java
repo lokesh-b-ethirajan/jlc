@@ -57,10 +57,12 @@ public class RemoteLockManager implements LockManager, TransportListener {
                     case PEER_QUEUED:
                         lockEvent.setLockEventState(LockEventState.PEER_ACQUIRED);
                         lockEvent.acquired();
+                        lockEvent.i++;
                         send(lockEvent);
                         lockEvent.setLockEventState(LockEventState.PEER_RELEASED);
                         release(lockEvent);
                         lockEvent.released();
+                        lockEvent.i++;
                         send(lockEvent);
                         break;
                 }
@@ -71,7 +73,7 @@ public class RemoteLockManager implements LockManager, TransportListener {
         }
 
         // TODO: consider persisting pending objects
-        logger.error("Shutting down..objects pending in queue -> " + queue.size());
+        logger.info("Shutting down..objects pending in queue -> " + queue.size());
 
         shutdownComplete = true;
     }
@@ -80,13 +82,14 @@ public class RemoteLockManager implements LockManager, TransportListener {
     public void received(LockEvent lockEvent) {
 
         if (logger.isDebugEnabled())
-            logger.debug("lock event received -> " + lockEvent.getLockEventState());
+            logger.debug("lock event received -> " + lockEvent.getId() + " : " + lockEvent.getLockEventState() + " : " + lockEvent.i);
 
         if (lockEvent.getLockEventState()== LockEventState.PEER_REQUESTED) {
             lockEvent.requested();
             queueLockEvent(lockEvent);
             lockEvent.setLockEventState(LockEventState.PEER_QUEUED);
             lockEvent.queued();
+            lockEvent.i++;
             send(lockEvent);
         }
     }
@@ -102,8 +105,6 @@ public class RemoteLockManager implements LockManager, TransportListener {
 
     private void queueLockEvent(LockEvent lockEvent) {
         queue.add(lockEvent);
-        if(logger.isDebugEnabled())
-            logger.debug("added lock event to queue");
     }
 
     @Override
@@ -129,6 +130,8 @@ public class RemoteLockManager implements LockManager, TransportListener {
     private void send(LockEvent lockEvent) {
         try {
             if(transportStrategy != null && lockEvent != null) {
+                if(logger.isDebugEnabled())
+                    logger.debug("sending..." + lockEvent.getId() + " : " + lockEvent.getLockEventState() + " : " + lockEvent.i);
                 transportStrategy.send(lockEvent);
             }
         } catch (IOException e) {

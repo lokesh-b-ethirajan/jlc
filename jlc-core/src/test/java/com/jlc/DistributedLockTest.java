@@ -39,7 +39,7 @@ public class DistributedLockTest {
     }
 
     @Test
-    // (threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
+            //(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
     public void theTest() {
 
         SampleLockEvent lockEvent1 = new SampleLockEvent();
@@ -57,7 +57,7 @@ public class DistributedLockTest {
     @AfterClass
     public void afterClass() {
 
-        while(TestCounter.get() != 16) {
+        while(TestCounter.get() != 2) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
