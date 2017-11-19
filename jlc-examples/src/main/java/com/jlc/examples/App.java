@@ -24,7 +24,7 @@ public class App {
 
         for(int i=0; i<10; i++) {
             SampleLockEvent lockEvent = new SampleLockEvent();
-            lockEvent.setUuid(UUID.randomUUID().toString());
+            lockEvent.setId(UUID.randomUUID().toString());
             LockManager lockManager = lockPartitioner.getPartition(lockEvent);
             lockManager.lock(lockEvent);
         }

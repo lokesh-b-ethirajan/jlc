@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
  * @author lokesh
  */
 
-public class DeviceStateEvent implements LockEvent {
+public class DeviceStateEvent extends LockEvent {
 
     private static final Logger logger = LogManager.getLogger(DeviceStateEvent.class);
 
@@ -22,13 +22,13 @@ public class DeviceStateEvent implements LockEvent {
     }
 
     @Override
-    public void setId(Object id) {
+    public void requested() {
 
     }
 
     @Override
-    public Object getId() {
-        return newDeviceState.getDevice();
+    public void queued() {
+
     }
 
     @Override
@@ -44,6 +44,11 @@ public class DeviceStateEvent implements LockEvent {
         } catch (Exception e) {
             logger.info(e);
         }
+    }
+
+    @Override
+    public void released() {
+
     }
 }
 
