@@ -24,6 +24,7 @@ public class SingleLockTest {
 
     @BeforeClass
     public void beforeClass() {
+        logger.info("Test started");
         TestCounter.clear();
         lockManager = new SimpleLockManager();
     }
@@ -52,6 +53,8 @@ public class SingleLockTest {
         TestCounter.clear();
 
         lockManager.shutdown();
+
+        logger.info("Test ended");
     }
 
 }

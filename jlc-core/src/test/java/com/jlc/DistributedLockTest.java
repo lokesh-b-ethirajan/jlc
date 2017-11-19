@@ -31,6 +31,7 @@ public class DistributedLockTest {
 
     @BeforeClass
     public void beforeClass() throws FileNotFoundException, URISyntaxException {
+        logger.info("Test started");
         TestCounter.clear();
         URL resource = getClass().getClassLoader().getResource("partition-config.json");
         JSONPartitionConfig jsonPartitionConfig = new JSONPartitionConfig(new File(resource.getFile()));
@@ -39,8 +40,7 @@ public class DistributedLockTest {
 
     }
 
-    @Test
-            //(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
+    @Test(threadPoolSize = 4, invocationCount = 8, timeOut = 1000)
     public void theTest() {
 
         SampleLockEvent lockEvent1 = new SampleLockEvent();
@@ -58,7 +58,7 @@ public class DistributedLockTest {
     @AfterClass
     public void afterClass() {
 
-        while(TestCounter.get() < 2) {
+        while(TestCounter.get() < 16) {
             try {
                 logger.info("test counter -> " + TestCounter.get());
                 TimeUnit.SECONDS.sleep(1);
@@ -70,6 +70,8 @@ public class DistributedLockTest {
         TestCounter.clear();
 
         lockPartitioner.shutdown();
+
+        logger.info("Test ended");
     }
 
 }

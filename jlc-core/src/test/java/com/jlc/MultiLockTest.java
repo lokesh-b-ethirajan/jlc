@@ -25,6 +25,7 @@ public class MultiLockTest {
 
     @BeforeClass
     public void beforeClass() {
+        logger.info("Test started");
         TestCounter.clear();
         lockPartitioner = new DefaultLockPartitioner(2);
     }
@@ -58,6 +59,8 @@ public class MultiLockTest {
         TestCounter.clear();
 
         lockPartitioner.shutdown();
+
+        logger.info("Test ended");
     }
 
 }
