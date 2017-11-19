@@ -28,11 +28,11 @@ public class DistributedLockPartitioner implements LockPartitioner {
         for(int i=0; i<partitionConfigs.length; i++) {
             PartitionConfig partitionConfig = partitionConfigs[i];
             if(partitionConfig.getType().equals("local")) {
-                TransportStrategy transportStrategy = transportStrategy = new DefaultServerTransportStrategy(partitionConfig.getPort());
+                TransportStrategy transportStrategy = new DefaultServerTransportStrategy(partitionConfig.getPort());
                 LockManager lockManager = new ServerLockManager(transportStrategy);
                 lockManagers[i] = lockManager;
             } else {
-                TransportStrategy transportStrategy = transportStrategy = new DefaultClientTransportStrategy(partitionConfig.getHost(), partitionConfig.getPort());
+                TransportStrategy transportStrategy = new DefaultClientTransportStrategy(partitionConfig.getHost(), partitionConfig.getPort());
                 LockManager lockManager = new ClientLockManager(transportStrategy);
                 lockManagers[i] = lockManager;
             }
