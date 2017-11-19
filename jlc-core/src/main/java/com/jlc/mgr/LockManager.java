@@ -6,9 +6,10 @@ import com.jlc.event.LockEvent;
  * @author lokesh
  */
 
-public interface LockManager extends Runnable {
+public interface LockManager {
 
     void lock(LockEvent lockEvent);
+    void release(LockEvent lockEvent);
     void shutdown();
 
 }

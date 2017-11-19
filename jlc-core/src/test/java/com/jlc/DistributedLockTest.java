@@ -1,6 +1,7 @@
 package com.jlc;
 
 import com.jlc.config.JSONPartitionConfig;
+import com.jlc.mgr.LockManager;
 import com.jlc.partition.DistributedLockPartitioner;
 import com.jlc.partition.LockPartitioner;
 import org.apache.logging.log4j.LogManager;
@@ -57,8 +58,9 @@ public class DistributedLockTest {
     @AfterClass
     public void afterClass() {
 
-        while(TestCounter.get() != 2) {
+        while(TestCounter.get() < 2) {
             try {
+                logger.info("test counter -> " + TestCounter.get());
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -47,7 +47,7 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
         if(objectOutputStream == null) {
             objectOutputStream = new ObjectOutputStream(getSocket().getOutputStream());
         }
-
+        objectOutputStream.reset();
         return objectOutputStream;
     }
 
@@ -114,9 +114,7 @@ public class DefaultClientTransportStrategy implements TransportStrategy, Runnab
     @Override
     public void send(LockEvent lockEvent) throws IOException {
         try {
-            ObjectOutputStream objectOutputStream = getObjectOutputStream();
-            objectOutputStream.writeObject(lockEvent);
-            objectOutputStream.flush();
+            getObjectOutputStream().writeObject(lockEvent);
         } catch (IOException e) {
             logger.error(e);
             cleanup();

@@ -1,7 +1,6 @@
 package com.jlc.net;
 
 import com.jlc.event.LockEvent;
-import com.jlc.mgr.SimpleLockManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,7 +62,7 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
         if(objectOutputStream == null) {
             objectOutputStream = new ObjectOutputStream(getSocket().getOutputStream());
         }
-
+        objectOutputStream.reset();
         return objectOutputStream;
     }
 
@@ -155,9 +154,7 @@ public class DefaultServerTransportStrategy implements TransportStrategy, Runnab
     @Override
     public void send(LockEvent lockEvent) throws IOException {
         try {
-            ObjectOutputStream objectOutputStream = getObjectOutputStream();
-            objectOutputStream.writeObject(lockEvent);
-            objectOutputStream.flush();
+            getObjectOutputStream().writeObject(lockEvent);
         } catch (IOException e) {
             logger.error(e);
             cleanup();

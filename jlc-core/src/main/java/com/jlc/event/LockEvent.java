@@ -10,7 +10,6 @@ public abstract class LockEvent implements Serializable {
 
     private Object id = null;
     private LockEventState lockEventState = LockEventState.INIT;
-    public int i = 0;
 
     public Object getId() {
         return id;
@@ -33,4 +32,8 @@ public abstract class LockEvent implements Serializable {
     public abstract void queued();
     public abstract void acquired();
     public abstract void released();
+
+    public String toString() {
+        return getId() + " : " + getLockEventState();
+    }
 }

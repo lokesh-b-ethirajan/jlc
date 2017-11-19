@@ -17,7 +17,7 @@ public class SampleLockEvent extends LockEvent {
 
     @Override
     public void acquired() {
-        logger.info("lock acquired -> " + getId());
+        logger.debug("lock acquired -> " + this);
         TestCounter.increment();
     }
 
